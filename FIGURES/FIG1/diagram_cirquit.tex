@@ -1,0 +1,142 @@
+\documentclass[crop,tikz]{standalone}% 'crop' is the default for v1.0, before it was 'preview'
+\usepackage{mathptmx}
+\usepackage{amsmath}
+%\usetikzlibrary{...}% tikz package already loaded by 'tikz' option
+\begin{document}
+\usetikzlibrary{backgrounds,fit,decorations.pathreplacing,calc}
+
+\newcommand{\ket}[1]{\ensuremath{\left|#1\right\rangle}}
+
+    \begin{tikzpicture}[thick]
+    % `operator' will only be used by Hadamard (H) gates here.
+    % `phase' is used for controlled phase gates (dots).
+    % `surround' is used for the background box.
+    \tikzstyle{operator} = [draw,fill=white,minimum size=1.5em] 
+    \tikzstyle{measurement} = [draw,fill=orange,minimum size=1.5em] 
+     
+    \tikzstyle{phase} = [draw,fill,shape=circle,minimum size=5pt,inner sep=0pt]
+    \tikzstyle{surround} = [fill=blue!10,thick,draw=black,rounded corners=2mm]
+    %
+    \node[text width=5cm] at (7.1,1) 
+    {\[
+        =
+            \begin{bmatrix}
+               1 & 0 & 0 & 0\\
+                0 & \text{cos}(\theta) & -\text{sin}(\theta) & 0 \\
+                0 & \text{sin}(\theta) &  \text{cos}(\theta) & 0 \\
+                0 & 0 & 0 & 1 
+            \end{bmatrix}
+    \]
+    };
+    
+    \node[text width=5cm] at (6.1,-1.4) 
+    {\[
+        = \text{Measurement}
+    \]
+
+    };
+    
+    %\node[text width=5cm] at (-2.1,0.1) 
+    %{ \[ \theta_1 \]
+    %};
+    
+    %\node[text width=5cm] at (1.3,0.1) 
+    %{ \[ \theta_4 \]
+    %};
+    
+    \node[text width=5cm] at (-1.4,0.7) 
+    { \[ \theta_1 \]
+    };
+    
+    \node[text width=5cm] at (0,-0.3) 
+    { \[ \theta_2 \]
+    };
+    
+    \node[text width=5cm] at (1.3,0.7) 
+    { \[ \theta_3 \]
+    };
+    
+    \node[text width=5cm] at (4.3,0.9) 
+    { \[ \theta \]
+    };
+    
+    
+    
+    
+    \matrix[row sep=0.4cm, column sep=0.8cm] (circuit) {
+    % First row.
+    \node (q1) {\ket{1}};
+    &
+    &
+    &
+    &
+    &
+    &
+    \node[measurement] (HM1) {}; &
+    \coordinate (end1); \\
+    % Second row.
+    \node (q2) {\ket{0}}; &
+    &
+    &
+    &
+    &
+    &
+    \node[measurement] (H2) {}; &
+    \coordinate (end2);\\
+    % Third row.
+    \node (q3) {\ket{0}}; &
+    &
+    &
+    &
+    &
+    &
+    \node[measurement] (HM3) {}; &
+    \coordinate (end3); \\
+    % Fourth row.
+    %\node (q4) {\ket{0}}; &
+    %&
+    %&
+    %&
+    %&
+    %&
+    %\node[measurement] (HM4) {}; &
+   
+    \coordinate (end4); \\
+    };
+    % Draw bracket on right with resultant state.
+    %\draw[decorate,decoration={},thick]
+    %    ($(circuit.north east)-(0cm,6cm)$)
+    %    to node[midway,right] (bracket) {$\displaystyle  
+    %    B_{ab}(\theta_{i})$}
+    %    ($(circuit.south east)+(0cm,6cm)$);
+    \begin{pgfonlayer}{background}
+        
+        
+        
+        % Draw background box.
+        \node[surround] (background) [fit = (q1) (end1) (q2) (end4) ] (){};
+        
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3); (q4) -- (end4);
+        
+        %\filldraw[fill=yellow] (-2.5,-0.7) rectangle (-1.7,0.7) ;
+        
+        %\filldraw[fill=yellow] (-0.8,-1.7) rectangle (-0,-0.3);
+        
+        \filldraw[fill=yellow] (-1.8,1.4) rectangle (-1,0.0);
+        
+        \filldraw[fill=yellow] (1.7,1.4) rectangle (0.9,0.0);
+    
+        \filldraw[fill=yellow] (0.4,0.4) rectangle (-0.4,-1.);
+
+        % Draw lines.
+        
+        
+        \filldraw[fill=yellow] (4.7,1.7) rectangle (3.9,0);
+        
+        \filldraw[fill=orange,thick] (4.05,-1.2) rectangle (4.6,-1.75);
+        
+        %(P12) -- (P22) (P13) -- (P33)
+    \end{pgfonlayer}
+    \end{tikzpicture}
+
+\end{document}

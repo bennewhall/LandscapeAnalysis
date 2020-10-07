@@ -17,7 +17,7 @@ Z=1
 Z1=1
 Z2=1
 
-with open('pes.dat', 'w') as f: 
+ 
  for ii in range (0,300):
   print("",file=f)                                                            
   diatomic = pyscf.gto.Mole()

@@ -19,7 +19,7 @@ Three steps to define Hamiltonian for SCF:
 Note you will see warning message on the screen:
         Overwritten attributes  get_ovlp get_hcore  of <class 'pyscf.scf.hf.RHF'>
 '''
-def readH():
+def readH(path):
     mol = gto.M()
     M = 2
     mol.nelectron = 2
@@ -29,7 +29,7 @@ def readH():
     S = 0
     M=0
 
-    with open('hcore', 'r') as h1f:
+    with open(path + 'hcore', 'r') as h1f:
         for line in h1f:
             line=line.strip()
             if line.startswith("#"):
@@ -55,8 +55,8 @@ def readH():
         if ( not numpy.allclose(h1.transpose() , h1 ) ):
             h1 = h1.transpose() + h1 - numpy.diag(numpy.diag(h1))
 
-    if os.path.exists('ovlp'):
-      with open('ovlp', 'r') as s1f:
+    if os.path.exists(path + 'ovlp'):
+      with open(path + 'ovlp', 'r') as s1f:
         for line in s1f:
             line=line.strip()
             if line.startswith("#"):
@@ -88,7 +88,7 @@ def readH():
 
 
     h2 = numpy.zeros((M,M,M,M))
-    with open("eri") as f:
+    with open(path + "eri") as f:
         for line in f:
             line = line.strip()
             if line.startswith('#'):

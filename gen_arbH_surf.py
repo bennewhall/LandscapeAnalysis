@@ -40,7 +40,7 @@ num_tests= 10
 #change num_tests to equal the number of test files
 
 
-for test in range(2,num_tests):
+for test in range(1,num_tests):
 
   path = 'Tests/GridTest'+str(test)+'/'
   with open(path+'analysis', 'w') as f: 
@@ -60,7 +60,7 @@ for test in range(2,num_tests):
     else:    
       rhf=readwriteH.readH(path)
   
-
+    
     dm1 = rhf.init_guess_by_1e()
     h1e = rhf.get_hcore()                                           
     s1e = rhf.get_ovlp()   

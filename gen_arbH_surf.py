@@ -20,6 +20,7 @@ from scipy import fftpack
 from mpl_toolkits.mplot3d import Axes3D                                         
 import matplotlib.pyplot as plt
 from pflacco.pflacco import create_initial_sample, create_feature_object, calculate_feature_set, calculate_features    
+import math
 
 #Plotting control parameters
 sample_points = 20
@@ -62,7 +63,8 @@ for test in range(1,num_tests+1):
     
     dm1 = rhf.init_guess_by_1e()
     h1e = rhf.get_hcore()                                           
-    s1e = rhf.get_ovlp()   
+    s1e = rhf.get_ovlp()  
+    m = 11 #int(math.sqrt(h1e.size)) 
     mo_energy, core_guess_coeff = rhf.eig(h1e, s1e)                         
     core_guess_occ = rhf.get_occ(mo_energy, core_guess_coeff)
 
@@ -81,16 +83,22 @@ for test in range(1,num_tests+1):
   
       return rhf.energy_tot(dm,vhf=vhf)                                           
 
-
-
+    lower_bound = []
+    upper_bound = []
+    blocks = []
+    for i in range(0,m):
+      lower_bound.append(sample_min)
+      upper_bound.append(sample_max)
+      blocks.append(8)
+    
     #Landscape Analysis
-    sample = create_initial_sample(100, 2, type = 'lhs', lower_bound=[sample_min , sample_min], upper_bound=[sample_max, sample_max])
+    sample = create_initial_sample(100, m, type = 'lhs', lower_bound=lower_bound, upper_bound=upper_bound)
     obj_val = []
 
     for s in sample:
       obj_val.append(E_hf(s))
     
-    feat_obj = create_feature_object(sample, obj_val,lower=sample_min, upper=sample_max, blocks = [8,8])
+    feat_obj = create_feature_object(sample, obj_val,lower=lower_bound, upper=upper_bound, blocks = blocks)
 
     ela_features = calculate_features(feat_obj)
     

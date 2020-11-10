@@ -21,7 +21,7 @@ Note you will see warning message on the screen:
 '''
 def readH(path):
     mol = gto.M()
-    M = 2
+    M = 24
     mol.nelectron = 2
 
     mf = scf.RHF(mol)
@@ -39,6 +39,7 @@ def readH(path):
                 M_in = line.split()
                 M_in = M_in[-1]
                 M = int(M_in)
+                print(M)
                 h1 = numpy.zeros((M,M))
                 #import pdb; pdb.set_trace()
 

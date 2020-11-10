@@ -40,9 +40,9 @@ num_tests= 10
 #change num_tests to equal the number of test files
 
 
-for test in range(1,num_tests):
+for test in range(2,num_tests):
 
-  path = 'Tests/GridTest'+test
+  path = 'Tests/GridTest'+str(test)+'/'
   with open(path+'analysis', 'w') as f: 
     if(do_write): 
       diatomic = pyscf.gto.Mole()

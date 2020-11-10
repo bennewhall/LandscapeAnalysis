@@ -31,8 +31,7 @@ Z=1
 print( """ 
 This file reads input from [hcore, ovlp, eri] where the file formatting is 
 "idx1 idx2 idx3 idx4 val" or "idx1 idx2 val". The first line should have
-'M' followed by the number of basis functions.  Output is [pes.dat] which
-can be plotted using the gnu_plot script.
+'M' followed by the number of basis functions.  Output is analysis.
 """)
 do_write=False
 #change to do_write to True to generate example input files
@@ -40,7 +39,7 @@ num_tests= 10
 #change num_tests to equal the number of test files
 
 
-for test in range(2,num_tests):
+for test in range(1,num_tests+1):
 
   path = 'Tests/GridTest'+str(test)+'/'
   with open(path+'analysis', 'w') as f: 

@@ -19,7 +19,7 @@ from matplotlib import cm
 from scipy import fftpack                                                      
 from mpl_toolkits.mplot3d import Axes3D                                         
 import matplotlib.pyplot as plt
-from pflacco.pflacco import create_initial_sample, create_feature_object, calculate_feature_set, calculate_features    
+from pflacco.pflacco import create_initial_sample, create_feature_object, calculate_feature_set, calculate_features, list_available_feature_sets    
 import math
 
 #Plotting control parameters
@@ -36,7 +36,7 @@ This file reads input from [hcore, ovlp, eri] where the file formatting is
 """)
 do_write=False
 #change to do_write to True to generate example input files
-num_tests= 10
+num_tests= 9
 #change num_tests to equal the number of test files
 
 
@@ -87,20 +87,21 @@ for test in range(1,num_tests+1):
     upper_bound = []
     blocks = []
     for i in range(0,m):
-      lower_bound.append(sample_min)
-      upper_bound.append(sample_max)
-      blocks.append(8)
+      lower_bound.append(float(sample_min))
+      upper_bound.append(float(sample_max))
+      blocks.append(8.0)
     
     #Landscape Analysis
     sample = create_initial_sample(100, m, type = 'lhs', lower_bound=lower_bound, upper_bound=upper_bound)
     obj_val = []
 
     for s in sample:
-      obj_val.append(E_hf(s))
+      obj_val.append(float(E_hf(s)))
     
-    feat_obj = create_feature_object(sample, obj_val,lower=lower_bound, upper=upper_bound, blocks = blocks)
+   
+    feat_obj = create_feature_object(sample, obj_val,minimize = True, lower=-10.0, upper=10.0)
 
-    ela_features = calculate_features(feat_obj)
+    ela_features = calculate_features(feat_obj,{"allow_cellmapping" : False})
     
     print(ela_features, file=f)
   

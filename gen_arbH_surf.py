@@ -19,7 +19,8 @@ from matplotlib import cm
 from scipy import fftpack                                                      
 from mpl_toolkits.mplot3d import Axes3D                                         
 import matplotlib.pyplot as plt
-from pflacco.pflacco import create_initial_sample, create_feature_object, calculate_feature_set, calculate_features, list_available_feature_sets    
+from pflacco.pflacco import create_initial_sample, create_feature_object, calculate_feature_set, calculate_features, list_available_feature_sets, plot_information_content
+
 import math
 
 #Plotting control parameters
@@ -39,8 +40,7 @@ do_write=False
 num_tests= 9
 #change num_tests to equal the number of test files
 
-
-for test in range(1,num_tests+1):
+for test in range(1,2):
 
   path = 'Tests/GridTest'+str(test)+'/'
   with open(path+'analysis', 'w') as f: 
@@ -64,9 +64,11 @@ for test in range(1,num_tests+1):
     dm1 = rhf.init_guess_by_1e()
     h1e = rhf.get_hcore()                                           
     s1e = rhf.get_ovlp()  
-    m = 11 #int(math.sqrt(h1e.size)) 
+     
     mo_energy, core_guess_coeff = rhf.eig(h1e, s1e)                         
     core_guess_occ = rhf.get_occ(mo_energy, core_guess_coeff)
+
+    len(core_guess_occ[core_guess_occ==0])
 
     def _rotate_mo(mo_coeff, mo_occ, dx):
 
@@ -81,7 +83,10 @@ for test in range(1,num_tests+1):
   
       vhf = rhf.get_veff(dm= dm)  
   
-      return rhf.energy_tot(dm,vhf=vhf)                                           
+      return rhf.energy_tot(dm,vhf=vhf)     
+
+    #find dimension of x                                      
+    m = len(core_guess_occ[core_guess_occ==0])
 
     lower_bound = []
     upper_bound = []
@@ -92,7 +97,7 @@ for test in range(1,num_tests+1):
       blocks.append(8.0)
     
     #Landscape Analysis
-    sample = create_initial_sample(100, m, type = 'lhs', lower_bound=lower_bound, upper_bound=upper_bound)
+    sample = create_initial_sample(100, m, type = 'random', lower_bound=lower_bound, upper_bound=upper_bound)
     obj_val = []
 
     for s in sample:
@@ -101,7 +106,7 @@ for test in range(1,num_tests+1):
    
     feat_obj = create_feature_object(sample, obj_val,minimize = True, lower=-10.0, upper=10.0)
 
-    ela_features = calculate_features(feat_obj,{"allow_cellmapping" : False})
+    ela_features = calculate_features(feat_obj,{'allow_cellmapping' : False})
     
     print(ela_features, file=f)
   

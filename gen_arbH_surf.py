@@ -97,7 +97,7 @@ for test in range(1,2):
       blocks.append(8.0)
     
     #Landscape Analysis
-    sample = create_initial_sample(100, m, type = 'random', lower_bound=lower_bound, upper_bound=upper_bound)
+    sample = create_initial_sample(1000, m, type = 'random', lower_bound=lower_bound, upper_bound=upper_bound)
     obj_val = []
 
     for s in sample:
@@ -109,4 +109,18 @@ for test in range(1,2):
     ela_features = calculate_features(feat_obj,{'allow_cellmapping' : False})
     
     print(ela_features, file=f)
+
+    #make 2d plot
+    with open(path+'pes.dat', 'w') as datafile:
+      NG = 100
+      X1=np.linspace(-np.pi,np.pi,NG)                                                  
+      X2=np.linspace(-np.pi,np.pi,NG)                                               
+      for x1 in X1:                                                                 
+        print("",file=datafile)        
+        for x2 in X2:              
+            x = np.zeros(m)   
+            x[0]=x1
+            x[1]=x2                                        
+            energy = E_hf(x)
+            print(x1,"\t",x2,"\t",energy, file = datafile)
   

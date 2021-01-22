@@ -11,7 +11,7 @@
 import readwriteH
 
 import pyscf 
-from pyscf import gto
+from pyscf import gto, scf
 import numpy as np
 import scipy
 import matplotlib.pyplot as plt                                                 
@@ -20,7 +20,7 @@ from scipy import fftpack
 from mpl_toolkits.mplot3d import Axes3D                                         
 import matplotlib.pyplot as plt
 from pflacco.pflacco import create_initial_sample, create_feature_object, calculate_feature_set, calculate_features, list_available_feature_sets, plot_information_content
-
+import pandas as pd
 import math
 
 #Plotting control parameters
@@ -39,9 +39,8 @@ do_write=False
 #change to do_write to True to generate example input files
 num_tests= 9
 #change num_tests to equal the number of test files
-
-for test in range(1,2):
-
+dataframes = []
+for test in range(1,num_tests+1):
   path = 'Tests/GridTest'+str(test)+'/'
   with open(path+'analysis', 'w') as f: 
     if(do_write): 
@@ -53,7 +52,8 @@ for test in range(1,2):
       diatomic.verbose = 0
       diatomic.charge = 1
       diatomic.build()
-    
+
+
       rhf = pyscf.scf.RHF(diatomic)
     
       readwriteH.writeH(rhf)
@@ -106,21 +106,40 @@ for test in range(1,2):
    
     feat_obj = create_feature_object(sample, obj_val,minimize = True, lower=-10.0, upper=10.0)
 
-    ela_features = calculate_features(feat_obj,{'allow_cellmapping' : False})
+    ela_features = calculate_feature_set(feat_obj,"ela_meta")
     
+
+
     print(ela_features, file=f)
 
+    
+
+    print("Optimizing using SCF")
+
+    #do optimization using scf
+    mf = rhf.run()
+    print(mf.converged)
+    print( "\n\n")
+
+    
+    ela_features["Converged"] = mf.converged
+    ela_features["Total Energy"] = mf.e_tot
+    ela_features["Run Number"] = [test]
+    dataframes.append(pd.DataFrame.from_dict(ela_features))
+
+pd.concat(dataframes)
+print(pd.concat(dataframes))
     #make 2d plot
-    with open(path+'pes.dat', 'w') as datafile:
-      NG = 100
-      X1=np.linspace(-np.pi,np.pi,NG)                                                  
-      X2=np.linspace(-np.pi,np.pi,NG)                                               
-      for x1 in X1:                                                                 
-        print("",file=datafile)        
-        for x2 in X2:              
-            x = np.zeros(m)   
-            x[0]=x1
-            x[1]=x2                                        
-            energy = E_hf(x)
-            print(x1,"\t",x2,"\t",energy, file = datafile)
+    # with open(path+'pes.dat', 'w') as datafile:
+    #   NG = 100
+    #   X1=np.linspace(-np.pi,np.pi,NG)                                                  
+    #   X2=np.linspace(-np.pi,np.pi,NG)                                               
+    #   for x1 in X1:                                                                 
+    #     print("",file=datafile)        
+    #     for x2 in X2:              
+    #         x = np.zeros(m)   
+    #         x[0]=x1
+    #         x[1]=x2                                        
+    #         energy = E_hf(x)
+    #         print(x1,"\t",x2,"\t",energy, file = datafile)
   

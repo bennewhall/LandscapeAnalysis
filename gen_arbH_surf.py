@@ -117,7 +117,9 @@ for test in range(1,num_tests+1):
     print("Optimizing using SCF")
 
     #do optimization using scf
+    rhf.verbose = 4
     mf = rhf.run()
+    
     print(mf.converged)
     print( "\n\n")
 

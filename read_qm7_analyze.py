@@ -106,19 +106,43 @@ for i, data in r_df.iterrows():
 
 
     #print(ela_features)
+    def rhf_callback(envs):
+      energy = envs['last_hf_e']
+      cycle = envs['cycle']
+      if(envs['scf_conv']):
+          rhf_callback.nc=cycle+1
+
+      if not hasattr(rhf_callback,'ens'):
+          rhf_callback.ens=[]
+          
+      rhf_callback.ens.append(energy)
+
+
+
+    print("Optimizing using SCF")
+
+    rhf.callback = rhf_callback
+
+    mf = rhf.run()
+
+    #number of cycles to convergence via callback function
+    nsteps = rhf_callback.nc
+
+    #energies at step k
+    #hf_ens= rhf_callback.ens
+
+    #last energy should be converged value
 
     
-
-    # print("Optimizing using SCF")
-
-    # #do optimization using scf
-    # mf = rhf.run()
-    # print(mf.converged)
-    # print( "\n\n")
+    print(mf.converged)
+    print(nsteps)
+    print( "\n\n")
+    
 
     
-    # ela_features["Converged"] = mf.converged
-    # ela_features["Total Energy"] = mf.e_tot
+    ela_features["Converged"] = mf.converged
+    ela_features["Total Energy"] = mf.e_tot
+    ela_features["nsteps"] = nsteps
     ela_features["Run Number"] = [i]
     dataframes.append(pd.DataFrame.from_dict(ela_features))
 

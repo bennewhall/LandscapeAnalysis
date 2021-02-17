@@ -91,7 +91,7 @@ for i, data in r_df.iterrows():
       blocks.append(8.0)
     
     #Landscape Analysis
-    sample = create_initial_sample(1000, m, type = 'random', lower_bound=lower_bound, upper_bound=upper_bound)
+    sample = create_initial_sample(100, m, type = 'random', lower_bound=lower_bound, upper_bound=upper_bound)
     obj_val = []
 
     
@@ -125,9 +125,6 @@ for i, data in r_df.iterrows():
 
     mf = rhf.run()
 
-    #number of cycles to convergence via callback function
-    nsteps = rhf_callback.nc
-
     #energies at step k
     #hf_ens= rhf_callback.ens
 
@@ -135,14 +132,21 @@ for i, data in r_df.iterrows():
 
     
     print(mf.converged)
-    print(nsteps)
     print( "\n\n")
     
 
     
     ela_features["Converged"] = mf.converged
     ela_features["Total Energy"] = mf.e_tot
-    ela_features["nsteps"] = nsteps
+
+    if mf.converged :
+      #number of cycles to convergence via callback function
+      ela_features["nsteps"] = rhf_callback.nc
+    else :
+
+      ela_features["nsteps"] = 0
+      print(0)
+
     ela_features["Run Number"] = [i]
     dataframes.append(pd.DataFrame.from_dict(ela_features))
 

@@ -26,17 +26,10 @@ r_df = pd.read_csv("R.csv", header=None)
 
 z_df = pd.read_csv("Z.csv", header=None)
 
-#for each mol in dataset construct mol and do landscape analysis
+    
 
-dataframes = []
-
-for i, data in r_df.iterrows():
-
-    charges = z_df.iloc[i]
-
-    c_np = charges.to_numpy()
-
-    r_np = data.to_numpy() 
+#function to analyze one mol and return a dictionary of analysis
+def analyze_one_mol(c_np, r_np, i) :
 
     mol = gto.Mole()
     for e in range(0,c_np.size):
@@ -149,13 +142,26 @@ for i, data in r_df.iterrows():
       print(0)
 
     ela_features["Run Number"] = [i]
-    dataframes.append(pd.DataFrame.from_dict(ela_features))
-
-pd.concat(dataframes)
-print(pd.concat(dataframes))
-
-
-
     
+    return pd.DataFrame.from_dict(ela_features)
 
 
+
+dataframes = [] 
+def collect_result(result):
+    global dataframes
+    dataframes.append(result)
+
+
+#for each mol in dataset construct mol and do landscape analysis
+
+
+pool = mp.Pool(mp.cpu_count())
+
+for i, data in r_df.iterrows():
+    pool.apply_async(analyze_one_mol, args=( z_df.iloc[i].to_numpy(), data.to_numpy(), i), callback = collect_result)
+
+pool.close()
+pool.join()
+
+print(pd.concat(dataframes))

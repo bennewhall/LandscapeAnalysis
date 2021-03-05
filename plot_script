@@ -164,7 +164,7 @@ set loadpath
 set fontpath 
 set psdir
 set cbtics 0.1
-set cbrange [-0.9:-0.2]
+set cbrange [-1.5:-0.2]
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
 GNUTERM = "qt"
 ## Last datafile plotted: "a301.txt"
